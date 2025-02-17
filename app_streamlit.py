@@ -7,8 +7,7 @@ import numpy as np
 from datetime import datetime, timedelta
 
 # OpenWeatherMap API Key
-API_KEY = "f7e298e639a1ce20cade9834ea578428"
-
+API_KEY = 
 # Location (Gerdshagen, Germany)
 LATITUDE = 53.9574
 LONGITUDE = 12.2534

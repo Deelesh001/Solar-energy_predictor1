@@ -7,7 +7,7 @@ import numpy as np
 from datetime import datetime, timedelta
 
 # OpenWeatherMap API Key
-API_KEY = 
+API_KEY = "f7e298e639a1ce20cade9834ea578428" 
 # Location (Gerdshagen, Germany)
 LATITUDE = 53.9574
 LONGITUDE = 12.2534
@@ -28,7 +28,7 @@ page = st.sidebar.radio("Navigation", ["Home", "Notifications", "About"])
 
 if page == "Home":
     # Streamlit App Title
-    st.title("Solar Farm Energy Prediction")
+    st.title("ÖkoStrom Solarpark 2.0")
     st.write("This app predicts solar energy production and provides dynamic pricing notifications based on weather forecasts.")
     
     # Fetch weather forecast from OpenWeatherMap API

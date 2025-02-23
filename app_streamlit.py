@@ -1,13 +1,20 @@
-
 import streamlit as st
 import requests
 import json
 import joblib
 import numpy as np
 from datetime import datetime, timedelta
+import os
+from dotenv import load_dotenv
 
-# OpenWeatherMap API Key
-API_KEY = "f7e298e639a1ce20cade9834ea578428" 
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API key from environment variable
+API_KEY = os.getenv("API_KEY")
+if not API_KEY:
+    st.error("API key not found. Please check your .env file.")
+
 # Location (Gerdshagen, Germany)
 LATITUDE = 53.9574
 LONGITUDE = 12.2534
@@ -16,7 +23,7 @@ LONGITUDE = 12.2534
 url = f"http://api.openweathermap.org/data/2.5/forecast?lat={LATITUDE}&lon={LONGITUDE}&appid={API_KEY}&units=metric"
 
 # Load the trained AI model
-MODEL_PATH = 'solar_energy_model.pkl'
+MODEL_PATH = '/Users/ravin/Desktop/EON_PROJECT/solar_energy_model.pkl'
 model = joblib.load(MODEL_PATH)
 
 # Streamlit Page Configuration
@@ -75,10 +82,4 @@ if page == "Home":
 elif page == "Notifications":
     st.title("🔔 Notifications")
     st.write("Here you can find the latest updates on energy production and pricing.")
-    st.info("✅ Most of your energy is coming from Gerdshagen Solar Park.")
-    st.warning("⚠️ Tomorrow's solar production might be lower due to increased cloud cover.")
-    st.success("🔋 Great time to use electricity now as production is high!")
-
-elif page == "About":
-    st.title("ℹ️ About")
-    st.write("This application is built to help users understand and optimize their energy consumption based on solar energy production forecasts.")
+    st.info("✅ Most of your energy is coming from Gerdshagen Solar Park."

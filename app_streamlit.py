@@ -42,32 +42,44 @@ if page == "Home":
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-        tomorrow_date = (datetime.today() + timedelta(days=1)).strftime('%Y-%m-%d')
-        
-        # Filter the forecast list for entries starting with tomorrow's date
-        tomorrow_forecasts = [entry for entry in data.get("list", []) if entry.get("dt_txt", "").startswith(tomorrow_date)]
-        
-        if tomorrow_forecasts:
-            avg_temp = sum(forecast["main"]["temp"] for forecast in tomorrow_forecasts) / len(tomorrow_forecasts)
-            avg_clouds = sum(forecast["clouds"]["all"] for forecast in tomorrow_forecasts) / len(tomorrow_forecasts)
-            
-            # Estimate solar irradiance
+
+        # ✅ Forecast Day Selector
+        forecast_day = st.selectbox(
+            "Choose a forecast day",
+            ["Today", "Tomorrow", "Day After Tomorrow"]
+        )
+
+        # ✅ Convert selection to date string
+        today = datetime.today()
+        day_offset = {"Today": 0, "Tomorrow": 1, "Day After Tomorrow": 2}
+        selected_date = (today + timedelta(days=day_offset[forecast_day])).strftime('%Y-%m-%d')
+
+        # ✅ Filter forecast entries for the selected date
+        selected_forecasts = [
+            entry for entry in data.get("list", [])
+            if entry.get("dt_txt", "").startswith(selected_date)
+        ]
+
+        if selected_forecasts:
+            # ✅ Calculate averages
+            avg_temp = sum(f["main"]["temp"] for f in selected_forecasts) / len(selected_forecasts)
+            avg_clouds = sum(f["clouds"]["all"] for f in selected_forecasts) / len(selected_forecasts)
             solar_irradiance_estimate = max(0, 100 - avg_clouds)
-            
-            st.write(f"### Forecast for Tomorrow ({tomorrow_date})")
-            st.write(f"🌡️ Average Temperature: {avg_temp:.2f} °C")
-            st.write(f"☁️ Average Cloud Cover: {avg_clouds:.2f}%")
+
+            # ✅ Show summary
+            st.subheader(f"📅 Forecast for {forecast_day} ({selected_date})")
+            st.write(f"🌡️ Avg Temperature: {avg_temp:.2f} °C")
+            st.write(f"☁️ Avg Cloud Cover: {avg_clouds:.2f}%")
             st.write(f"☀️ Estimated Solar Irradiance: {solar_irradiance_estimate:.2f} W/m²")
-            
-            # Prepare input for model (only using solar irradiance and temperature)
+
+            # ✅ Prepare input and predict
             input_data = np.array([[solar_irradiance_estimate, avg_temp]])
-            
-            # Prediction Button
+
             if st.button("Predict Energy Production"):
                 prediction = model.predict(input_data)[0]
-                st.write(f"### Predicted Energy Production: {prediction:.2f} kWh")
-                
-                # Dynamic Pricing Notifications
+                st.write(f"🔋 Predicted Energy Output: {prediction:.2f} kWh")
+
+                # ✅ Dynamic pricing messages (basic logic)
                 if prediction > 80:
                     st.success("🔋 Use energy now! Prices might be low.")
                 elif 50 <= prediction <= 80:
@@ -75,11 +87,7 @@ if page == "Home":
                 else:
                     st.error("💰 Prices might be high. Reduce energy consumption.")
         else:
-            st.warning("⚠️ No forecast data available for tomorrow!")
+            st.warning("⚠️ No forecast data available for that day.")
     else:
         st.error("⚠️ Failed to fetch weather data. Please check the API connection.")
 
-elif page == "Notifications":
-    st.title("🔔 Notifications")
-    st.write("Here you can find the latest updates on energy production and pricing.")
-    st.info("✅ Most of your energy is coming from Gerdshagen Solar Park.")

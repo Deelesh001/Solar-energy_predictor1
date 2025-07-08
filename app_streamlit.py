@@ -30,7 +30,7 @@ model = joblib.load(MODEL_PATH)
 st.set_page_config(page_title="Solar Energy Prediction", page_icon="☀️", layout="wide")
 
 # Sidebar with Toggle Navigation
-st.sidebar.image("logo.png", use_column_width=True)
+st.sidebar.image("eon_logo.png", use_container_width=True)
 page = st.sidebar.radio("Navigation", ["Home", "Notifications", "About"])
 
 if page == "Home":

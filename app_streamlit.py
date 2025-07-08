@@ -82,4 +82,4 @@ if page == "Home":
 elif page == "Notifications":
     st.title("🔔 Notifications")
     st.write("Here you can find the latest updates on energy production and pricing.")
-    st.info("✅ Most of your energy is coming from Gerdshagen Solar Park."
+    st.info("✅ Most of your energy is coming from Gerdshagen Solar Park.")

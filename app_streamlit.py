@@ -1,46 +1,69 @@
-import streamlit as st
+import os
+from datetime import datetime, timedelta
+
+import numpy as np
 import requests
 import joblib
-import numpy as np
-from datetime import datetime, timedelta
-import os
-from dotenv import load_dotenv
+import streamlit as st
 
-# Load environment variables
-load_dotenv()
-
-# API Key
-API_KEY = st.secrets["API_KEY"]
-if not API_KEY:
-    st.error("API key not found. Please check your .env file.")
-
-# Location (Gerdshagen, Germany)
+# ---------------- Constants ----------------
 LATITUDE = 53.9574
 LONGITUDE = 12.2534
-
-# OpenWeatherMap Forecast API
-url = f"http://api.openweathermap.org/data/2.5/forecast?lat={LATITUDE}&lon={LONGITUDE}&appid={API_KEY}&units=metric"
-
-# Load trained ML model
 MODEL_PATH = 'model/solar_energy_model.pkl'
-model = joblib.load(MODEL_PATH)
+HIGH_OUTPUT_THRESHOLD = 80
+MEDIUM_OUTPUT_THRESHOLD = 50
 
-# Streamlit config
+# ---------------- Load API Key ----------------
+API_KEY = st.secrets.get("API_KEY")
+if not API_KEY:
+    st.error("API key not found. Please add it to .streamlit/secrets.toml.")
+    st.stop()
+
+# ---------------- Streamlit Config ----------------
 st.set_page_config(page_title="Solar Energy Prediction", page_icon="☀️", layout="wide")
 st.sidebar.image("logo.png", use_container_width=True)
 page = st.sidebar.radio("Navigation", ["Home", "About"])
 
-# --------------------- HOME ---------------------
+# ---------------- Helper Functions ----------------
+@st.cache_data(show_spinner=False)
+def load_model(path):
+    try:
+        return joblib.load(path)
+    except FileNotFoundError:
+        st.error("⚠️ Model file not found.")
+        st.stop()
+
+@st.cache_data(show_spinner=False)
+def fetch_weather_data(lat, lon, api_key):
+    url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={api_key}&units=metric"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        st.error(f"⚠️ Failed to fetch weather data: {e}")
+        return None
+
+def summarize_forecast(forecast_list):
+    temps = [entry["main"]["temp"] for entry in forecast_list]
+    clouds = [entry["clouds"]["all"] for entry in forecast_list]
+    avg_temp = np.mean(temps)
+    avg_clouds = np.mean(clouds)
+    irradiance = max(0, 100 - avg_clouds)
+    return avg_temp, avg_clouds, irradiance
+
+# ---------------- Load Model ----------------
+model = load_model(MODEL_PATH)
+
+# ---------------- Home Page ----------------
 if page == "Home":
     st.title("☀️ ÖkoStrom Solarpark 2.0")
     st.write("AI-powered forecast of solar energy production based on weather conditions.")
 
-    # Fetch weather data
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
+    weather_data = fetch_weather_data(LATITUDE, LONGITUDE, API_KEY)
 
-        # Forecast day selector
+    if weather_data:
+        # Date selection
         today = datetime.today()
         tomorrow = today + timedelta(days=1)
         day_after = today + timedelta(days=2)
@@ -55,18 +78,15 @@ if page == "Home":
         day_offset = options[selected_label]
         selected_date = (today + timedelta(days=day_offset)).strftime('%Y-%m-%d')
 
-        # Filter relevant forecasts
         selected_forecasts = [
-            entry for entry in data.get("list", [])
+            entry for entry in weather_data.get("list", [])
             if entry.get("dt_txt", "").startswith(selected_date)
         ]
 
         if selected_forecasts:
-            avg_temp = sum(f["main"]["temp"] for f in selected_forecasts) / len(selected_forecasts)
-            avg_clouds = sum(f["clouds"]["all"] for f in selected_forecasts) / len(selected_forecasts)
-            solar_irradiance_estimate = max(0, 100 - avg_clouds)
+            avg_temp, avg_clouds, irradiance = summarize_forecast(selected_forecasts)
 
-            # Weather Summary Section
+            # --- Weather Summary ---
             with st.container():
                 st.markdown("### 📊 Weather Summary")
                 st.subheader(f"📅 Forecast for {selected_label}")
@@ -74,20 +94,20 @@ if page == "Home":
                 col1, col2, col3 = st.columns(3)
                 col1.metric("🌡️ Temperature", f"{avg_temp:.1f} °C")
                 col2.metric("☁️ Cloud Cover", f"{avg_clouds:.0f} %")
-                col3.metric("☀️ Irradiance", f"{solar_irradiance_estimate:.0f} W/m²")
+                col3.metric("☀️ Irradiance", f"{irradiance:.0f} W/m²")
 
             st.write("")  # spacing
 
-            # Prediction Section
+            # --- Energy Prediction ---
             with st.container():
                 st.markdown("### 🔮 Energy Production Forecast")
 
-                input_data = np.array([[solar_irradiance_estimate, avg_temp]])
+                input_data = np.array([[irradiance, avg_temp]])
 
                 if st.button("Predict Energy Production"):
                     prediction = model.predict(input_data)[0]
 
-                    # Highlighted card for result
+                    # Display prediction result
                     st.markdown(
                         f"""
                         <div style='background-color:#22c55e;padding:1rem 1.5rem;border-radius:0.75rem;margin-top:1rem;margin-bottom:1rem;'>
@@ -98,20 +118,20 @@ if page == "Home":
                         unsafe_allow_html=True
                     )
 
-                    # Smart Notification
+                    # Smart notification
                     st.markdown("### 💡 Smart Energy Tip")
-                    if prediction > 80:
+                    if prediction > HIGH_OUTPUT_THRESHOLD:
                         st.success("☀️ Excellent solar generation expected today! Consider feeding energy into the grid or running high-load systems now to maximize profit.")
-                    elif 50 <= prediction <= 80:
+                    elif prediction >= MEDIUM_OUTPUT_THRESHOLD:
                         st.warning("🌤️ Moderate solar output forecast. It's a good time for balanced usage or storing excess energy if available.")
                     else:
                         st.error("☁️ Low solar energy expected. Minimize heavy usage or rely on storage/backups. Consider delaying high-consumption tasks.")
         else:
             st.warning("⚠️ No forecast data available for that day.")
     else:
-        st.error("⚠️ Failed to fetch weather data. Please check the API connection.")
+        st.error("⚠️ Weather data unavailable. Check API settings.")
 
-# --------------------- ABOUT ---------------------
+# ---------------- About Page ----------------
 elif page == "About":
     st.title("ℹ️ About ÖkoStrom Solarpark")
 
@@ -135,6 +155,7 @@ elif page == "About":
     ---
     _For more technical details, visit our GitHub portfolio (coming soon)._
     """)
+
 
 
 

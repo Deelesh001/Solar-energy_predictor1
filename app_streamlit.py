@@ -86,38 +86,50 @@ if page == "Home":
 
                 input_data = np.array([[solar_irradiance_estimate, avg_temp]])
 
-                if st.button("Predict Energy Production"):
-                    prediction = model.predict(input_data)[0]
-                
-                    # Add anchor target to scroll to
-                    st.markdown("<a name='prediction-result'></a>", unsafe_allow_html=True)
-                
-                    # Prediction Display
-                    st.markdown(
-                        f"""
-                        <div style='background-color:#22c55e;padding:1rem 1.5rem;border-radius:0.75rem;margin-top:1rem;margin-bottom:1rem;'>
-                            <h2 style='text-align:center;color:white;margin:0;'>🔋 Predicted Energy Output</h2>
-                            <p style='text-align:center;font-size:2rem;color:white;margin:0;'><strong>{prediction:.2f} kWh</strong></p>
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-                
-                    # Smart Tip Section
-                    st.markdown("### 💡 Smart Energy Tip")
-                    if prediction > 80:
-                        st.success("☀️ Excellent solar generation expected today! Consider feeding energy into the grid or running high-load systems now to maximize profit.")
-                    elif 50 <= prediction <= 80:
-                        st.warning("🌤️ Moderate solar output forecast. It's a good time for balanced usage or storing excess energy if available.")
-                    else:
-                        st.error("☁️ Low solar energy expected. Minimize heavy usage or rely on storage/backups. Consider delaying high-consumption tasks.")
-                
-                    # ⬇️ JavaScript to scroll to the prediction block
-                    st.components.v1.html("""
-                        <script>
-                            document.location.hash = "#prediction-result";
-                        </script>
-                    """, height=0)
+                # Button click sets scroll flag and reruns
+if st.button("Predict Energy Production"):
+        prediction = model.predict(input_data)[0]
+        st.session_state.prediction = float(prediction)
+        st.session_state.scroll_to_prediction = True
+        st.experimental_rerun()
+    
+    # After rerun: show prediction and scroll
+    if st.session_state.get("scroll_to_prediction", False) and "prediction" in st.session_state:
+        prediction = st.session_state.prediction
+    
+        # Add anchor target
+        st.markdown("<a name='prediction-result'></a>", unsafe_allow_html=True)
+    
+        # Show result card
+        st.markdown(
+            f"""
+            <div style='background-color:#22c55e;padding:1rem 1.5rem;border-radius:0.75rem;margin-top:1rem;margin-bottom:1rem;'>
+                <h2 style='text-align:center;color:white;margin:0;'>🔋 Predicted Energy Output</h2>
+                <p style='text-align:center;font-size:2rem;color:white;margin:0;'><strong>{prediction:.2f} kWh</strong></p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    
+        st.markdown("### 💡 Smart Energy Tip")
+        if prediction > 80:
+            st.success("☀️ Excellent solar generation expected today! Consider feeding energy into the grid or running high-load systems now to maximize profit.")
+        elif 50 <= prediction <= 80:
+            st.warning("🌤️ Moderate solar output forecast. It's a good time for balanced usage or storing excess energy if available.")
+        else:
+            st.error("☁️ Low solar energy expected. Minimize heavy usage or rely on storage/backups. Consider delaying high-consumption tasks.")
+    
+        # Scroll with JS
+        st.components.v1.html("""
+            <script>
+                setTimeout(function() {
+                    document.location.hash = "#prediction-result";
+                }, 100);
+            </script>
+        """, height=0)
+    
+        # Reset scroll flag
+        st.session_state.scroll_to_prediction = False
 
         else:
             st.warning("⚠️ No forecast data available for that day.")

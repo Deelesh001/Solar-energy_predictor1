@@ -44,10 +44,25 @@ if page == "Home":
         data = response.json()
 
         # ✅ Forecast Day Selector
-        forecast_day = st.selectbox(
-            "Choose a forecast day",
-            ["Today", "Tomorrow", "Day After Tomorrow"]
-        )
+        # Set up date variables
+        today = datetime.today()
+        tomorrow = today + timedelta(days=1)
+        day_after = today + timedelta(days=2)
+        
+        # Create user-friendly labels
+        options = {
+            f"📅 Today ({today.strftime('%d %b')})": 0,
+            f"🌤️ Tomorrow ({tomorrow.strftime('%d %b')})": 1,
+            f"⛅ Day After Tomorrow ({day_after.strftime('%d %b')})": 2
+        }
+        
+        # Display in the dropdown
+        selected_label = st.selectbox("Select a Day to Forecast Solar Output", list(options.keys()))
+        day_offset = options[selected_label]
+        
+        # Calculate the selected date
+        selected_date = (today + timedelta(days=day_offset)).strftime('%Y-%m-%d')
+
 
         # ✅ Convert selection to date string
         today = datetime.today()

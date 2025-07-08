@@ -116,33 +116,26 @@ elif page == "About":
     st.title("ℹ️ About ÖkoStrom Solarpark")
 
     st.markdown("""
-    **ÖkoStrom Solarpark 2.0** is an AI-powered forecasting tool that predicts solar energy production using real-time weather data for a solar farm in Gerdshagen, Germany.
+    **ÖkoStrom Solarpark 2.0** is a smart, AI-powered web app that forecasts solar energy production based on local weather conditions in Gerdshagen, Germany.
 
-    The app estimates daily solar energy output based on temperature and cloud cover, enabling better energy planning, usage decisions, or grid feed-in strategies.
-
-    ---
-    **👨‍💻 Developed by:** Deelesh Puttyah & Akhilesh Sohotoo  
-    **🎓 Field of Study:** Data Science  
-    **🏫 University:** XU Exponential University  
-    **🤝 Collaboration:** Built as part of a university project in partnership with **E.ON**, one of Europe’s leading energy providers.  
-    **📍 Location Forecasted:** Gerdshagen, Germany
+    The goal is to help users—such as solar operators or energy planners—better understand daily solar output trends and make informed decisions about energy use or storage.
 
     ---
-    **🔧 Technologies Used**  
-    - Python & Streamlit  
-    - Scikit-learn (ML model)  
-    - OpenWeatherMap API  
-    - Pandas & NumPy
+    ### 👥 Team & Collaboration
+
+    This project was developed by **Deelesh Puttyah** and **Akhilesh Sohotoo**  
+    as part of a university collaboration between **XU Exponential University** and **E.ON**, one of Europe’s leading energy providers.
 
     ---
-    **📊 Model Input:**  
-    - Cloud Cover (%)  
-    - Temperature (°C)  
-    → **Predicted Output:** Energy production in kWh
+    ### 🌱 Why This Matters
+
+    Forecasting renewable energy is a key step toward building more reliable and sustainable energy systems.  
+    ÖkoStrom Solarpark 2.0 is a small step toward making green energy smarter, more accessible, and more impactful.
 
     ---
-    This project showcases how machine learning can support smarter, more sustainable energy forecasting and contribute to the clean energy transition.
+    _For more technical details, visit our GitHub portfolio (coming soon)._
     """)
+
 
 
 

@@ -23,7 +23,7 @@ LONGITUDE = 12.2534
 url = f"http://api.openweathermap.org/data/2.5/forecast?lat={LATITUDE}&lon={LONGITUDE}&appid={API_KEY}&units=metric"
 
 # Load the trained AI model
-MODEL_PATH = '/Users/ravin/Desktop/EON_PROJECT/solar_energy_model.pkl'
+MODEL_PATH = 'model/solar_energy_model.pkl'
 model = joblib.load(MODEL_PATH)
 
 # Streamlit Page Configuration

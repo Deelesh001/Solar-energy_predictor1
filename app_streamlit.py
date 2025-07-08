@@ -79,7 +79,8 @@ if page == "Home":
 
             if st.button("Predict Energy Production"):
                 prediction = model.predict(input_data)[0]
-                st.write(f"🔋 Predicted Energy Output: {prediction:.2f} kWh")
+                st.markdown(f"### 🔋 **Predicted Energy Output:** `{prediction:.2f} kWh`")
+
 
                 # ✅ Dynamic pricing messages (basic logic)
                 if prediction > 80:

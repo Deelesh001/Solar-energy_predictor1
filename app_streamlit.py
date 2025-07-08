@@ -28,8 +28,9 @@ model = joblib.load(MODEL_PATH)
 # Streamlit config
 st.set_page_config(page_title="Solar Energy Prediction", page_icon="☀️", layout="wide")
 st.sidebar.image("logo.png", use_container_width=True)
-page = st.sidebar.radio("Navigation", ["Home", "Notifications", "About"])
+page = st.sidebar.radio("Navigation", ["Home", "About"])
 
+# --------------------- HOME ---------------------
 if page == "Home":
     st.title("☀️ ÖkoStrom Solarpark 2.0")
     st.write("AI-powered forecast of solar energy production based on weather conditions.")
@@ -109,6 +110,39 @@ if page == "Home":
             st.warning("⚠️ No forecast data available for that day.")
     else:
         st.error("⚠️ Failed to fetch weather data. Please check the API connection.")
+
+# --------------------- ABOUT ---------------------
+elif page == "About":
+    st.title("ℹ️ About ÖkoStrom Solarpark")
+
+    st.markdown("""
+    **ÖkoStrom Solarpark 2.0** is an AI-powered forecasting tool that predicts solar energy production using real-time weather data for a solar farm in Gerdshagen, Germany.
+
+    The app estimates daily solar energy output based on temperature and cloud cover, enabling better energy planning, usage decisions, or grid feed-in strategies.
+
+    ---
+    **👨‍💻 Developed by:** Deelesh Puttyah & Akhilesh Sohotoo  
+    **🎓 Field of Study:** Data Science  
+    **🏫 University:** XU Exponential University  
+    **🤝 Collaboration:** Built as part of a university project in partnership with **E.ON**, one of Europe’s leading energy providers.  
+    **📍 Location Forecasted:** Gerdshagen, Germany
+
+    ---
+    **🔧 Technologies Used**  
+    - Python & Streamlit  
+    - Scikit-learn (ML model)  
+    - OpenWeatherMap API  
+    - Pandas & NumPy
+
+    ---
+    **📊 Model Input:**  
+    - Cloud Cover (%)  
+    - Temperature (°C)  
+    → **Predicted Output:** Energy production in kWh
+
+    ---
+    This project showcases how machine learning can support smarter, more sustainable energy forecasting and contribute to the clean energy transition.
+    """)
 
 
 

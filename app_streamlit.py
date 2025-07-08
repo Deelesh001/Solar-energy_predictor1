@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Get API key from environment variable
-API_KEY = os.getenv("API_KEY")
+API_KEY = st.secrets["API_KEY"]
 if not API_KEY:
     st.error("API key not found. Please check your .env file.")
 

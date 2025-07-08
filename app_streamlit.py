@@ -66,11 +66,13 @@ if page == "Home":
             avg_clouds = sum(f["clouds"]["all"] for f in selected_forecasts) / len(selected_forecasts)
             solar_irradiance_estimate = max(0, 100 - avg_clouds)
 
-            # ✅ Show summary
-            st.subheader(f"📅 Forecast for {forecast_day} ({selected_date})")
-            st.write(f"🌡️ Avg Temperature: {avg_temp:.2f} °C")
-            st.write(f"☁️ Avg Cloud Cover: {avg_clouds:.2f}%")
-            st.write(f"☀️ Estimated Solar Irradiance: {solar_irradiance_estimate:.2f} W/m²")
+            st.markdown(f"### 📅 Forecast for **{forecast_day}** ({selected_date})")
+
+            # Horizontal layout with 3 visual metrics
+            col1, col2, col3 = st.columns(3)
+            col1.metric("🌡️ Temperature", f"{avg_temp:.1f} °C")
+            col2.metric("☁️ Cloud Cover", f"{avg_clouds:.0f} %")
+            col3.metric("☀️ Irradiance", f"{solar_irradiance_estimate:.0f} W/m²")
 
             # ✅ Prepare input and predict
             input_data = np.array([[solar_irradiance_estimate, avg_temp]])

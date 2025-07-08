@@ -89,7 +89,10 @@ if page == "Home":
                 if st.button("Predict Energy Production"):
                     prediction = model.predict(input_data)[0]
                 
-                    # Big bold prediction display (card-style)
+                    # Add anchor target to scroll to
+                    st.markdown("<a name='prediction-result'></a>", unsafe_allow_html=True)
+                
+                    # Prediction Display
                     st.markdown(
                         f"""
                         <div style='background-color:#22c55e;padding:1rem 1.5rem;border-radius:0.75rem;margin-top:1rem;margin-bottom:1rem;'>
@@ -100,16 +103,21 @@ if page == "Home":
                         unsafe_allow_html=True
                     )
                 
-                    # Tip heading
+                    # Smart Tip Section
                     st.markdown("### 💡 Smart Energy Tip")
-                
-                    # Dynamic pricing notification
                     if prediction > 80:
                         st.success("☀️ Excellent solar generation expected today! Consider feeding energy into the grid or running high-load systems now to maximize profit.")
                     elif 50 <= prediction <= 80:
                         st.warning("🌤️ Moderate solar output forecast. It's a good time for balanced usage or storing excess energy if available.")
                     else:
                         st.error("☁️ Low solar energy expected. Minimize heavy usage or rely on storage/backups. Consider delaying high-consumption tasks.")
+                
+                    # ⬇️ JavaScript to scroll to the prediction block
+                    st.components.v1.html("""
+                        <script>
+                            document.location.hash = "#prediction-result";
+                        </script>
+                    """, height=0)
 
         else:
             st.warning("⚠️ No forecast data available for that day.")

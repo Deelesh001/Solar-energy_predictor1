@@ -1,6 +1,5 @@
 import streamlit as st
 import requests
-import json
 import joblib
 import numpy as np
 from datetime import datetime, timedelta
@@ -29,76 +28,60 @@ model = joblib.load(MODEL_PATH)
 # Streamlit Page Configuration
 st.set_page_config(page_title="Solar Energy Prediction", page_icon="☀️", layout="wide")
 
-# Sidebar with Toggle Navigation
+# Sidebar
 st.sidebar.image("logo.png", use_container_width=True)
 page = st.sidebar.radio("Navigation", ["Home", "Notifications", "About"])
 
 if page == "Home":
-    # Streamlit App Title
     st.title("ÖkoStrom Solarpark 2.0")
     st.write("This app predicts solar energy production and provides dynamic pricing notifications based on weather forecasts.")
-    
-    # Fetch weather forecast from OpenWeatherMap API
+
+    # Fetch weather data
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
 
-        # ✅ Forecast Day Selector
-        # Set up date variables
-        # Set date variables
+        # Friendly Forecast Selector
         today = datetime.today()
         tomorrow = today + timedelta(days=1)
         day_after = today + timedelta(days=2)
-        
-        # Dropdown options with emojis and dates
+
         options = {
             f"📅 Today ({today.strftime('%d %b')})": 0,
             f"🌤️ Tomorrow ({tomorrow.strftime('%d %b')})": 1,
             f"⛅ Day After Tomorrow ({day_after.strftime('%d %b')})": 2
         }
-        
-        # Let user select from the pretty labels
+
         selected_label = st.selectbox("Select a Day to Forecast Solar Output", list(options.keys()))
         day_offset = options[selected_label]
-        
-        # Final computed date string (for filtering API response)
         selected_date = (today + timedelta(days=day_offset)).strftime('%Y-%m-%d')
 
-
-        # ✅ Convert selection to date string
-        today = datetime.today()
-        day_offset = {"Today": 0, "Tomorrow": 1, "Day After Tomorrow": 2}
-        selected_date = (today + timedelta(days=day_offset[forecast_day])).strftime('%Y-%m-%d')
-
-        # ✅ Filter forecast entries for the selected date
+        # Filter forecast entries for the selected day
         selected_forecasts = [
             entry for entry in data.get("list", [])
             if entry.get("dt_txt", "").startswith(selected_date)
         ]
 
         if selected_forecasts:
-            # ✅ Calculate averages
+            # Compute averages
             avg_temp = sum(f["main"]["temp"] for f in selected_forecasts) / len(selected_forecasts)
             avg_clouds = sum(f["clouds"]["all"] for f in selected_forecasts) / len(selected_forecasts)
             solar_irradiance_estimate = max(0, 100 - avg_clouds)
 
-            st.markdown(f"### 📅 Forecast for **{forecast_day}** ({selected_date})")
-
-            # Horizontal layout with 3 visual metrics
+            # Forecast Summary
+            st.subheader(f"📅 Forecast for {selected_label}")
             col1, col2, col3 = st.columns(3)
             col1.metric("🌡️ Temperature", f"{avg_temp:.1f} °C")
             col2.metric("☁️ Cloud Cover", f"{avg_clouds:.0f} %")
             col3.metric("☀️ Irradiance", f"{solar_irradiance_estimate:.0f} W/m²")
 
-            # ✅ Prepare input and predict
+            # Prediction
             input_data = np.array([[solar_irradiance_estimate, avg_temp]])
-
             if st.button("Predict Energy Production"):
                 prediction = model.predict(input_data)[0]
                 st.markdown(f"### 🔋 **Predicted Energy Output:** `{prediction:.2f} kWh`")
 
-
-                # ✅ Dynamic pricing messages (basic logic)
+                # Pricing Advice
                 if prediction > 80:
                     st.success("🔋 Use energy now! Prices might be low.")
                 elif 50 <= prediction <= 80:
@@ -109,4 +92,5 @@ if page == "Home":
             st.warning("⚠️ No forecast data available for that day.")
     else:
         st.error("⚠️ Failed to fetch weather data. Please check the API connection.")
+
 

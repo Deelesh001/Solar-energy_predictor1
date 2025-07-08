@@ -92,11 +92,11 @@ if page == "Home":
 
                     # Dynamic Pricing Suggestion
                     if prediction > 80:
-                        st.success("🔋 Use energy now! Prices might be low.")
+                        st.success("☀️ Excellent solar generation expected today! Consider feeding energy into the grid or running high-load systems now to maximize profit.")
                     elif 50 <= prediction <= 80:
-                        st.warning("⚡ Prices are moderate. Consider efficient usage.")
+                        st.warning("🌤️ Moderate solar output forecast. It's a good time for balanced usage or storing excess energy if available.")
                     else:
-                        st.error("💰 Prices might be high. Reduce energy consumption.")
+                        st.error("☁️ Low solar energy expected. Minimize heavy usage or rely on storage/backups. Consider delaying high-consumption tasks.")
         else:
             st.warning("⚠️ No forecast data available for that day.")
     else:

@@ -45,22 +45,23 @@ if page == "Home":
 
         # ✅ Forecast Day Selector
         # Set up date variables
+        # Set date variables
         today = datetime.today()
         tomorrow = today + timedelta(days=1)
         day_after = today + timedelta(days=2)
         
-        # Create user-friendly labels
+        # Dropdown options with emojis and dates
         options = {
             f"📅 Today ({today.strftime('%d %b')})": 0,
             f"🌤️ Tomorrow ({tomorrow.strftime('%d %b')})": 1,
             f"⛅ Day After Tomorrow ({day_after.strftime('%d %b')})": 2
         }
         
-        # Display in the dropdown
+        # Let user select from the pretty labels
         selected_label = st.selectbox("Select a Day to Forecast Solar Output", list(options.keys()))
         day_offset = options[selected_label]
         
-        # Calculate the selected date
+        # Final computed date string (for filtering API response)
         selected_date = (today + timedelta(days=day_offset)).strftime('%Y-%m-%d')
 
 

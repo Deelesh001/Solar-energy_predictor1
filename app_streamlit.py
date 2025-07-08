@@ -88,15 +88,29 @@ if page == "Home":
 
                 if st.button("Predict Energy Production"):
                     prediction = model.predict(input_data)[0]
-                    st.markdown(f"### 🔋 **Predicted Energy Output:** `{prediction:.2f} kWh`")
-
-                    # Dynamic Pricing Suggestion
+                
+                    # Big bold prediction display (card-style)
+                    st.markdown(
+                        f"""
+                        <div style='background-color:#22c55e;padding:1rem 1.5rem;border-radius:0.75rem;margin-top:1rem;margin-bottom:1rem;'>
+                            <h2 style='text-align:center;color:white;margin:0;'>🔋 Predicted Energy Output</h2>
+                            <p style='text-align:center;font-size:2rem;color:white;margin:0;'><strong>{prediction:.2f} kWh</strong></p>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+                
+                    # Tip heading
+                    st.markdown("### 💡 Smart Energy Tip")
+                
+                    # Dynamic pricing notification
                     if prediction > 80:
                         st.success("☀️ Excellent solar generation expected today! Consider feeding energy into the grid or running high-load systems now to maximize profit.")
                     elif 50 <= prediction <= 80:
                         st.warning("🌤️ Moderate solar output forecast. It's a good time for balanced usage or storing excess energy if available.")
                     else:
                         st.error("☁️ Low solar energy expected. Minimize heavy usage or rely on storage/backups. Consider delaying high-consumption tasks.")
+
         else:
             st.warning("⚠️ No forecast data available for that day.")
     else:

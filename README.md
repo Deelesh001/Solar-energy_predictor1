@@ -16,6 +16,21 @@ The app predicts solar energy production based on weather forecasts and gives fr
 - Shows an interactive line chart to visualize solar potential for the next 3 days.
 - Provides smart and friendly messages based on predicted energy output — encouraging sustainable usage, even in cloudy weather.
 
+
+## 🖼️ Screenshots
+
+Here are some previews of the app in action:
+
+<img src="assets/screenshot_1.png" width="700"/>
+
+<img src="assets/screenshot_2.png" width="700"/>
+
+
+
+
+
+
+
 ## 🔍 How the Prediction Works
 
 The model uses two features — average temperature and cloud cover — to predict solar energy output in kWh. I trained this model using historical solar and weather data.

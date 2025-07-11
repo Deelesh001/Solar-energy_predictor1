@@ -21,9 +21,9 @@ The app predicts solar energy production based on weather forecasts and gives fr
 
 Here are some previews of the app in action:
 
-<img src="assets/screenshot_1.png" width="700"/>
+<img src="assets/screenshot_1" width="700"/>
 
-<img src="assets/screenshot_2.png" width="700"/>
+<img src="assets/screenshot_2" width="700"/>
 
 
 

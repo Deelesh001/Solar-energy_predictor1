@@ -21,7 +21,8 @@ if not API_KEY:
 
 # ---------------- Streamlit Config ----------------
 st.set_page_config(page_title="Solar Energy Prediction", page_icon="☀️", layout="wide")
-st.sidebar.image("assets/logo.png", use_column_width=True)
+st.sidebar.image("assets/logo.png", width=150)
+
 
 page = st.sidebar.radio("Navigation", ["Home", "About"])
 

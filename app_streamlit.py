@@ -126,7 +126,7 @@ if page == "Home":
                     elif prediction >= MEDIUM_OUTPUT_THRESHOLD:
                         st.warning("🌤️ Moderate solar output forecast. It's a good time for balanced usage or storing excess energy if available.")
                     else:
-                        st.error("☁️ Low solar energy expected. Minimize heavy usage or rely on storage/backups. Consider delaying high-consumption tasks.")
+                        st.error("☁️ Low solar energy expected.Consider delaying high-consumption tasks.")
         else:
             st.warning("⚠️ No forecast data available for that day.")
     else:

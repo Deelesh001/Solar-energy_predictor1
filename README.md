@@ -31,7 +31,7 @@ To run this app on your machine:
 
    ```bash
    git clone https://github.com/your-username/solar-predictor-E.ON.git
-   cd solar-predictor-E.on
+   cd solar-predictor-E.ON
    ```
 
 2. Install the required libraries:

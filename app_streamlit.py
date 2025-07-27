@@ -123,7 +123,7 @@ if page == "Home":
                     # Smart notification
                     st.markdown("### 💡 Smart Energy Tip")
                     if prediction > HIGH_OUTPUT_THRESHOLD:
-                        st.success("☀️Excellent solar generation expected today!"
+                        st.success("☀️Excellent solar generation expected today!  "
                                     "It’s a good time to run high-consumption appliances or systems to take advantage of clean, abundant energy.")
                     elif prediction >= MEDIUM_OUTPUT_THRESHOLD:
                         st.warning("🌤️ Moderate solar output forecast. It's a good time for balanced usage or storing excess energy if available.")

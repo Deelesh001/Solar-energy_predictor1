@@ -60,7 +60,7 @@ model = load_model(MODEL_PATH)
 # ---------------- Home Page ----------------
 if page == "Home":
     st.title("☀️ ÖkoStrom Solarpark 2.0")
-    st.write("AI-powered forecast of solar energy production based on weather conditions.")
+    st.write("AI-powered forecast of solar energy production in Gerdshagen based on real-time weather conditions.")
 
     weather_data = fetch_weather_data(LATITUDE, LONGITUDE, API_KEY)
 
@@ -123,7 +123,8 @@ if page == "Home":
                     # Smart notification
                     st.markdown("### 💡 Smart Energy Tip")
                     if prediction > HIGH_OUTPUT_THRESHOLD:
-                        st.success("☀️ Excellent solar generation expected today! Consider feeding energy into the grid or running high-load systems now to maximize profit.")
+                        st.success("☀️Excellent solar generation expected today!
+                                    It’s a good time to run high-consumption appliances or systems to take advantage of clean, abundant energy.")
                     elif prediction >= MEDIUM_OUTPUT_THRESHOLD:
                         st.warning("🌤️ Moderate solar output forecast. It's a good time for balanced usage or storing excess energy if available.")
                     else:

@@ -59,7 +59,7 @@ model = load_model(MODEL_PATH)
 
 # ---------------- Home Page ----------------
 if page == "Home":
-    st.title("☀️ ÖkoStrom Solarpark 2.0")
+    st.title("☀️ ÖkoStrom Solarpark Dynamic")
     st.write("AI-powered forecast of solar energy production in Gerdshagen based on real-time weather conditions.")
 
     weather_data = fetch_weather_data(LATITUDE, LONGITUDE, API_KEY)
